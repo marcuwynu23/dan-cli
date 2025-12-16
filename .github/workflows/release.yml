@@ -48,19 +48,22 @@ jobs:
         id: tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Create bin directory
+        run: mkdir -p bin
+
       - name: Build binary
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w -X main.version=${{ steps.tag.outputs.VERSION }}" -o dan${{ matrix.ext }} cmd/dan/main.go
+          go build -ldflags="-s -w -X main.version=${{ steps.tag.outputs.VERSION }}" -o bin/dan${{ matrix.ext }} cmd/dan/main.go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dan-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.ext }}
-          path: dan${{ matrix.ext }}
+          path: bin/dan${{ matrix.ext }}
 
   release:
     name: Create Release

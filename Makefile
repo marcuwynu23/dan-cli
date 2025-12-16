@@ -1,8 +1,10 @@
 .PHONY: build test test-verbose test-coverage bench clean install
 
 # Build the CLI
+# Creates bin/dan on Unix, bin/dan.exe on Windows
 build:
-	go build -o dan.exe cmd/dan/main.go
+	mkdir -p bin
+	go build -o bin/dan cmd/dan/main.go
 
 # Run tests
 test:
@@ -26,4 +28,4 @@ install:
 
 # Clean build artifacts
 clean:
-	rm -f dan.exe dan
+	rm -rf bin

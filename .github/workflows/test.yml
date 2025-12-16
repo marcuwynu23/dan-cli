@@ -76,9 +76,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            binary: dan
+            binary: bin/dan
           - os: windows-latest
-            binary: dan.exe
+            binary: bin/dan.exe
 
     steps:
       - name: Checkout code
@@ -89,9 +89,22 @@ jobs:
         with:
           go-version: '1.23'
 
+      - name: Create bin directory
+        run: mkdir -p bin
+
       - name: Build binary
-        run: go build -o ${{ matrix.binary }} cmd/dan/main.go
-        continue-on-error: false
+        run: |
+          echo "Building binary: ${{ matrix.binary }}"
+          go build -v -o ${{ matrix.binary }} cmd/dan/main.go
+          BUILD_EXIT=$?
+          echo "Build exit code: $BUILD_EXIT"
+          if [ $BUILD_EXIT -ne 0 ]; then
+            echo "❌ Build failed with exit code $BUILD_EXIT"
+            exit 1
+          fi
+          echo "✅ Build command completed successfully"
+          echo "Checking if binary was created:"
+          ls -la ${{ matrix.binary }} 2>/dev/null && echo "Binary exists!" || echo "Binary NOT found!"
 
       - name: Verify binary exists (Linux)
         if: matrix.os == 'ubuntu-latest'
@@ -99,16 +112,13 @@ jobs:
         run: |
           BINARY="${{ matrix.binary }}"
           echo "Checking for binary: $BINARY"
-          echo "Current directory: $(pwd)"
-          echo "Listing all files:"
-          ls -la
           if [ -f "$BINARY" ]; then
             echo "✓ Binary $BINARY found successfully"
             ls -lh "$BINARY"
           else
             echo "✗ Binary $BINARY not found"
-            echo "Searching for any 'dan' files:"
-            find . -name "*dan*" -type f 2>/dev/null || true
+            echo "Contents of bin directory:"
+            ls -la bin/ 2>/dev/null || echo "bin directory doesn't exist"
             exit 1
           fi
 
@@ -118,15 +128,12 @@ jobs:
         run: |
           $binary = "${{ matrix.binary }}"
           Write-Host "Checking for binary: $binary"
-          Write-Host "Current directory: $(Get-Location)"
-          Write-Host "Listing all files:"
-          Get-ChildItem | Format-Table Name, Length
           if (Test-Path $binary) {
             Write-Host "✓ Binary $binary found successfully"
             Get-Item $binary | Format-List
           } else {
             Write-Host "✗ Binary $binary not found"
-            Write-Host "Searching for any 'dan' files:"
-            Get-ChildItem -Recurse -Filter "*dan*" -ErrorAction SilentlyContinue | Select-Object FullName
+            Write-Host "Contents of bin directory:"
+            Get-ChildItem bin/ -ErrorAction SilentlyContinue | Format-Table Name, Length
             exit 1
           }
