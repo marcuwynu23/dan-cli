@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         go-version: ['1.21', '1.22', '1.23']
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout code
@@ -79,6 +79,8 @@ jobs:
             binary: bin/dan
           - os: windows-latest
             binary: bin/dan.exe
+          - os: macos-latest
+            binary: bin/dan
 
     steps:
       - name: Checkout code
@@ -90,9 +92,11 @@ jobs:
           go-version: '1.23'
 
       - name: Create bin directory
+        shell: bash
         run: mkdir -p bin
 
       - name: Build binary
+        shell: bash
         run: |
           echo "Building binary: ${{ matrix.binary }}"
           go build -v -o ${{ matrix.binary }} cmd/dan/main.go
@@ -106,8 +110,8 @@ jobs:
           echo "Checking if binary was created:"
           ls -la ${{ matrix.binary }} 2>/dev/null && echo "Binary exists!" || echo "Binary NOT found!"
 
-      - name: Verify binary exists (Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Verify binary exists (Linux/macOS)
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         shell: bash
         run: |
           BINARY="${{ matrix.binary }}"
