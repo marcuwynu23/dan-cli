@@ -91,16 +91,24 @@ jobs:
 
       - name: Build binary
         run: go build -o ${{ matrix.binary }} cmd/dan/main.go
+        continue-on-error: false
 
-      - name: Verify binary exists (Linux/Unix)
+      - name: Verify binary exists (Linux)
         if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
-          if [ -f "${{ matrix.binary }}" ]; then
-            echo "Binary ${{ matrix.binary }} built successfully"
-            ls -lh ${{ matrix.binary }}
+          BINARY="${{ matrix.binary }}"
+          echo "Checking for binary: $BINARY"
+          echo "Current directory: $(pwd)"
+          echo "Listing all files:"
+          ls -la
+          if [ -f "$BINARY" ]; then
+            echo "✓ Binary $BINARY found successfully"
+            ls -lh "$BINARY"
           else
-            echo "Binary ${{ matrix.binary }} not found"
+            echo "✗ Binary $BINARY not found"
+            echo "Searching for any 'dan' files:"
+            find . -name "*dan*" -type f 2>/dev/null || true
             exit 1
           fi
 
@@ -108,10 +116,17 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          if (Test-Path "${{ matrix.binary }}") {
-            Write-Host "Binary ${{ matrix.binary }} built successfully"
-            Get-Item "${{ matrix.binary }}" | Format-List
+          $binary = "${{ matrix.binary }}"
+          Write-Host "Checking for binary: $binary"
+          Write-Host "Current directory: $(Get-Location)"
+          Write-Host "Listing all files:"
+          Get-ChildItem | Format-Table Name, Length
+          if (Test-Path $binary) {
+            Write-Host "✓ Binary $binary found successfully"
+            Get-Item $binary | Format-List
           } else {
-            Write-Host "Binary ${{ matrix.binary }} not found"
+            Write-Host "✗ Binary $binary not found"
+            Write-Host "Searching for any 'dan' files:"
+            Get-ChildItem -Recurse -Filter "*dan*" -ErrorAction SilentlyContinue | Select-Object FullName
             exit 1
           }
