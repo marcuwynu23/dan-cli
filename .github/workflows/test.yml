@@ -92,7 +92,8 @@ jobs:
       - name: Build binary
         run: go build -o ${{ matrix.binary }} cmd/dan/main.go
 
-      - name: Verify binary exists
+      - name: Verify binary exists (Linux/Unix)
+        if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
           if [ -f "${{ matrix.binary }}" ]; then
@@ -102,3 +103,15 @@ jobs:
             echo "Binary ${{ matrix.binary }} not found"
             exit 1
           fi
+
+      - name: Verify binary exists (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          if (Test-Path "${{ matrix.binary }}") {
+            Write-Host "Binary ${{ matrix.binary }} built successfully"
+            Get-Item "${{ matrix.binary }}" | Format-List
+          } else {
+            Write-Host "Binary ${{ matrix.binary }} not found"
+            exit 1
+          }
