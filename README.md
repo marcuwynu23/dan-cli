@@ -119,6 +119,28 @@ func main() {
 }
 ```
 
+## Testing
+
+Run the test suite:
+
+```bash
+go test ./tests
+```
+
+For verbose output:
+
+```bash
+go test ./tests -v
+```
+
+Run benchmarks:
+
+```bash
+go test ./tests -bench=. -benchmem
+```
+
+See [tests/README.md](tests/README.md) for more details.
+
 ## Project Structure
 
 ```
@@ -128,6 +150,11 @@ dan-cli/
 │       └── main.go      # CLI application
 ├── dan/
 │   └── dan.go           # DAN parser/encoder library
+├── tests/
+│   ├── dan_test.go      # Core unit tests
+│   ├── integration_test.go  # Integration tests
+│   ├── benchmark_test.go    # Performance benchmarks
+│   └── README.md        # Test documentation
 ├── go.mod               # Go module file
 └── README.md           # This file
 ```
