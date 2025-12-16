@@ -79,8 +79,6 @@ jobs:
             binary: dan
           - os: windows-latest
             binary: dan.exe
-          - os: macos-latest
-            binary: dan
 
     steps:
       - name: Checkout code
