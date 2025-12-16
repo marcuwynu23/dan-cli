@@ -54,6 +54,12 @@ jobs:
         id: tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Generate go.sum
+        run: go mod tidy
+
       - name: Create bin directory
         run: mkdir -p bin
 
