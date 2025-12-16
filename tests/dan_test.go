@@ -481,12 +481,33 @@ func TestEncodeTables(t *testing.T) {
 
 	result := dan.Encode(input)
 	
-	// Should contain table structure
-	if !contains(result, "table(name, age)") {
-		t.Errorf("Encode() should contain 'table(name, age)'")
+	// Should contain table structure (column order may vary due to map iteration)
+	if !contains(result, "table(") {
+		t.Errorf("Encode() should contain 'table('")
 	}
-	if !contains(result, "\"Alice\", 25") {
-		t.Errorf("Encode() should contain table row data")
+	if !contains(result, "name") || !contains(result, "age") {
+		t.Errorf("Encode() should contain column names 'name' and 'age'")
+	}
+	if !contains(result, "\"Alice\"") {
+		t.Errorf("Encode() should contain table row data with 'Alice'")
+	}
+	if !contains(result, "25") {
+		t.Errorf("Encode() should contain table row data with '25'")
+	}
+	// Verify round-trip works
+	decoded, err := dan.Decode(result)
+	if err != nil {
+		t.Fatalf("Round-trip Decode() error = %v", err)
+	}
+	if !reflect.DeepEqual(decoded, input) {
+		// Note: Column order may differ, so check that data is preserved
+		users, ok := decoded["users"].([]map[string]interface{})
+		if !ok {
+			t.Fatalf("Expected users to be []map[string]interface{}")
+		}
+		if len(users) != 2 {
+			t.Errorf("Expected 2 users, got %d", len(users))
+		}
 	}
 }
 

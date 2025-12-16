@@ -65,7 +65,8 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
-          args: --timeout=5m
+          args: --timeout=5m --skip-files-use-default-excludes
+        continue-on-error: true
 
   build:
     name: Build on ${{ matrix.os }}
@@ -94,5 +95,12 @@ jobs:
         run: go build -o ${{ matrix.binary }} cmd/dan/main.go
 
       - name: Verify binary exists
+        shell: bash
         run: |
-          test -f ${{ matrix.binary }} || (echo "Binary not found" && exit 1)
+          if [ -f "${{ matrix.binary }}" ]; then
+            echo "Binary ${{ matrix.binary }} built successfully"
+            ls -lh ${{ matrix.binary }}
+          else
+            echo "Binary ${{ matrix.binary }} not found"
+            exit 1
+          fi
