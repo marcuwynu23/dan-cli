@@ -59,11 +59,37 @@ jobs:
         run: |
           go build -ldflags="-s -w -X main.version=${{ steps.tag.outputs.VERSION }}" -o bin/dan${{ matrix.ext }} cmd/dan/main.go
 
-      - name: Upload artifact
+      - name: Create archive (Linux/macOS)
+        if: matrix.os == 'linux' || matrix.os == 'darwin'
+        shell: bash
+        run: |
+          cd bin
+          tar -czf ../dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz dan
+          cd ..
+          echo "Created dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz"
+
+      - name: Create archive (Windows)
+        if: matrix.os == 'windows'
+        shell: bash
+        run: |
+          cd bin
+          zip -r ../dan-${{ matrix.os }}-${{ matrix.arch }}.zip dan.exe
+          cd ..
+          echo "Created dan-${{ matrix.os }}-${{ matrix.arch }}.zip"
+
+      - name: Upload artifact (Linux/macOS)
+        if: matrix.os == 'linux' || matrix.os == 'darwin'
         uses: actions/upload-artifact@v4
         with:
-          name: dan-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.ext }}
-          path: bin/dan${{ matrix.ext }}
+          name: dan-${{ matrix.os }}-${{ matrix.arch }}
+          path: dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+
+      - name: Upload artifact (Windows)
+        if: matrix.os == 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dan-${{ matrix.os }}-${{ matrix.arch }}
+          path: dan-${{ matrix.os }}-${{ matrix.arch }}.zip
 
   release:
     name: Create Release
@@ -86,7 +112,9 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          find artifacts -type f -exec cp {} release/ \;
+          find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} release/ \;
+          echo "Release files prepared:"
+          ls -lh release/
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
