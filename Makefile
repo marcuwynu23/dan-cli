@@ -6,7 +6,7 @@ build:
 	mkdir -p bin
 	go build -o bin/dan cmd/dan/main.go
 
-# Run tests (library lives in ../dan-go)
+# Run tests (dango module — ../dan-go checkout in monorepo)
 test:
 	go -C ../dan-go test ./...
 
