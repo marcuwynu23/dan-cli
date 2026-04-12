@@ -13,6 +13,9 @@ jobs:
   test:
     name: Test on Go ${{ matrix.go-version }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: dan-cli
 
     strategy:
       matrix:
@@ -35,17 +38,17 @@ jobs:
         run: go mod download
 
       - name: Run tests
-        run: go test ./tests -v
+        run: go -C ../dan-go test ./... -v
 
       - name: Run tests with coverage
         if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.23'
-        run: go test ./tests -coverprofile=coverage.out
+        run: go -C ../dan-go test ./... -coverprofile=coverage.out
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.23'
         uses: codecov/codecov-action@v4
         with:
-          file: ./coverage.out
+          file: dan-go/coverage.out
           fail_ci_if_error: false
 
   lint:
@@ -65,12 +68,16 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: latest
+          working-directory: dan-cli
           args: --timeout=5m --skip-files-use-default-excludes
         continue-on-error: true
 
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: dan-cli
 
     strategy:
       matrix:

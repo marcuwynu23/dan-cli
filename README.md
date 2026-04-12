@@ -98,12 +98,13 @@ package main
 
 import (
     "fmt"
-    "dan-cli/dan"
+
+    "github.com/marcuwynu23/dan/lib"
 )
 
 func main() {
     // Decode DAN text
-    data, err := dan.Decode(`name: "test"`)
+    data, err := lib.Decode(`name: "test"`)
     if err != nil {
         panic(err)
     }
@@ -114,50 +115,44 @@ func main() {
         "name": "test",
         "age": 30,
     }
-    output := dan.Encode(obj)
+    output := lib.Encode(obj)
     fmt.Println(output)
 }
 ```
 
 ## Testing
 
-Run the test suite:
+Parser tests live in **dan-go**:
 
 ```bash
-go test ./tests
+go -C ../dan-go test ./...
 ```
 
-For verbose output:
+Verbose and benchmarks:
 
 ```bash
-go test ./tests -v
+go -C ../dan-go test ./... -v
+go -C ../dan-go test ./... -bench=. -benchmem
 ```
 
-Run benchmarks:
+From this directory you can also use `make test`, `make test-verbose`, and `make bench`.
 
-```bash
-go test ./tests -bench=. -benchmem
-```
+Tests for the parser live in the [`dan-go`](../dan-go) module (`go -C ../dan-go test ./...` or `make test` from this repo).
 
-See [tests/README.md](tests/README.md) for more details.
-
-## Project Structure
+## Project structure
 
 ```
 dan-cli/
-├── cmd/
-│   └── dan/
-│       └── main.go      # CLI application
-├── dan/
-│   └── dan.go           # DAN parser/encoder library
-├── tests/
-│   ├── dan_test.go      # Core unit tests
-│   ├── integration_test.go  # Integration tests
-│   ├── benchmark_test.go    # Performance benchmarks
-│   └── README.md        # Test documentation
-├── go.mod               # Go module file
-└── README.md           # This file
+├── cmd/dan/main.go   # CLI entrypoint
+├── examples/         # Sample .dan files
+├── go.mod            # depends on github.com/marcuwynu23/dan/lib
+└── README.md
 ```
+
+## Community
+
+- [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
+- [Funding / PayPal](https://paypal.me/wynumarcu23) (also via `.github/FUNDING.yml` **Sponsor** button)
 
 ## License
 
