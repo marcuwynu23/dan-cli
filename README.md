@@ -99,7 +99,7 @@ package main
 import (
     "fmt"
 
-    "github.com/marcuwynu23/dango/lib"
+    "github.com/marcuwynu23/godan/lib"
 )
 
 func main() {
@@ -122,22 +122,22 @@ func main() {
 
 ## Testing
 
-Parser tests run in the **dango** module (`github.com/marcuwynu23/dango`), checked out at [`../dan-go`](../dan-go) in this monorepo:
+Parser tests run in the **godan** module (`github.com/marcuwynu23/godan`), checked out at [`../dango`](../dango) in this monorepo:
 
 ```bash
-go -C ../dan-go test ./...
+go -C ../dango test ./...
 ```
 
 Verbose and benchmarks:
 
 ```bash
-go -C ../dan-go test ./... -v
-go -C ../dan-go test ./... -bench=. -benchmem
+go -C ../dango test ./... -v
+go -C ../dango test ./... -bench=. -benchmem
 ```
 
 From this directory you can also use `make test`, `make test-verbose`, and `make bench`.
 
-Use `go -C ../dan-go test ./...` or `make test` to exercise the library the CLI depends on (`github.com/marcuwynu23/dango/lib`).
+Use `go -C ../dango test ./...` or `make test` to exercise the library the CLI depends on (`github.com/marcuwynu23/godan/lib`).
 
 ## Project structure
 
@@ -145,7 +145,7 @@ Use `go -C ../dan-go test ./...` or `make test` to exercise the library the CLI 
 dan-cli/
 ├── cmd/dan/main.go   # CLI entrypoint
 ├── examples/         # Sample .dan files
-├── go.mod            # depends on github.com/marcuwynu23/dango/lib
+├── go.mod            # depends on github.com/marcuwynu23/godan/lib
 └── README.md
 ```
 

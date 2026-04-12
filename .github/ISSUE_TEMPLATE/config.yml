@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/marcuwynu23/dan-cli/security/advisories/new
     about: Use private advisories — do not file public issues for undisclosed security bugs.
   - name: DAN format & Go library
-    url: https://github.com/marcuwynu23/dan-go
+    url: https://github.com/marcuwynu23/godan
     about: Parser / encoder behavior may live in the shared Go module.

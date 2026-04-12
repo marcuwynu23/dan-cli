@@ -13,7 +13,7 @@
 ## Checklist
 
 - [ ] I have read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-- [ ] `go test` for the **dango** module (`go -C ../dan-go test ./...`) passes where applicable; `go build ./cmd/dan` succeeds.
+- [ ] `go test` for the **godan** module (`go -C ../dango test ./...`) passes where applicable; `go build ./cmd/dan` succeeds.
 - [ ] I updated [README.md](README.md) or examples if behavior changed for users.
 
 ## Related issues

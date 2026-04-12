@@ -15,8 +15,8 @@ Use the [bug report](.github/ISSUE_TEMPLATE/bug_report.md), [feature request](.g
 ## Pull requests
 
 1. Fork the repo and create a branch from `main`.
-2. The CLI depends on the Go module [`github.com/marcuwynu23/dango`](https://github.com/marcuwynu23/dan-go) (this monorepo uses `replace github.com/marcuwynu23/dango => ../dan-go` in `go.mod`).
-3. Run `go build ./cmd/dan` and `go -C ../dan-go test ./...` for the **dango** module (or `make test` from this directory) before opening a PR.
+2. The CLI depends on the Go module [`github.com/marcuwynu23/godan`](https://github.com/marcuwynu23/godan) (this monorepo uses `replace github.com/marcuwynu23/godan => ../dango` in `go.mod`).
+3. Run `go build ./cmd/dan` and `go -C ../dango test ./...` for the **godan** module (or `make test` from this directory) before opening a PR.
 4. Keep commits focused; write clear messages and describe the PR for reviewers.
 
 ## Coding style
