@@ -6,21 +6,21 @@ build:
 	mkdir -p bin
 	go build -o bin/dan cmd/dan/main.go
 
-# Run tests (dango module — ../dan-go checkout in monorepo)
+# Run tests (godan module — ../dango checkout in monorepo)
 test:
-	go -C ../dan-go test ./...
+	go -C ../dango test ./...
 
 # Run tests with verbose output
 test-verbose:
-	go -C ../dan-go test ./... -v
+	go -C ../dango test ./... -v
 
 # Run tests with coverage
 test-coverage:
-	go -C ../dan-go test ./... -cover
+	go -C ../dango test ./... -cover
 
 # Run benchmarks
 bench:
-	go -C ../dan-go test ./... -bench=. -benchmem
+	go -C ../dango test ./... -bench=. -benchmem
 
 # Install the CLI
 install:
