@@ -8,7 +8,8 @@ import (
 	"io"
 	"os"
 	"strings"
-	"github.com/marcuwynu23/dango/lib"
+
+	"github.com/marcuwynu23/godan/lib"
 )
 
 func main() {
