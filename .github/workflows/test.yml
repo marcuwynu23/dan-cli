@@ -37,18 +37,18 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
-      - name: Run dango (../dan-go) library tests
-        run: go -C ../dan-go test ./... -v
+      - name: Run godan (../dango) library tests
+        run: go -C ../dango test ./... -v
 
-      - name: Run dango library tests with coverage
+      - name: Run godan library tests with coverage
         if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.23'
-        run: go -C ../dan-go test ./... -coverprofile=coverage.out
+        run: go -C ../dango test ./... -coverprofile=coverage.out
 
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.23'
         uses: codecov/codecov-action@v4
         with:
-          file: dan-go/coverage.out
+          file: dango/coverage.out
           fail_ci_if_error: false
 
   lint:
