@@ -17,7 +17,7 @@ Please use **[GitHub private vulnerability reporting](https://github.com/marcuwy
 
 Include:
 
-- Description, impact, and affected components (CLI flags, file I/O, dependency on `dan`/`dan-go`, etc.)
+- Description, impact, and affected components (CLI flags, file I/O, dependency on **`dango`** (`github.com/marcuwynu23/dango/lib`), etc.)
 - Steps to reproduce and proof-of-concept if safe to share
 - Version or commit hash
 
@@ -28,7 +28,7 @@ Include:
 
 ## Scope
 
-This policy covers the **dan-cli** repository (command-line tool, build scripts, and bundled examples). Parser/encoder logic may also live in **[dan-go](https://github.com/marcuwynu23/dan-go)**; if the issue is purely in the library, maintainers may move the advisory to the correct repo.
+This policy covers the **dan-cli** repository (command-line tool, build scripts, and bundled examples). Parser/encoder logic lives in the **dango** module ([**dan-go** repository](https://github.com/marcuwynu23/dan-go)); if the issue is purely in the library, maintainers may move the advisory to the correct repo.
 
 ## Safe harbor
 

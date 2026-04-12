@@ -99,7 +99,7 @@ package main
 import (
     "fmt"
 
-    "github.com/marcuwynu23/dan/lib"
+    "github.com/marcuwynu23/dango/lib"
 )
 
 func main() {
@@ -122,7 +122,7 @@ func main() {
 
 ## Testing
 
-Parser tests live in **dan-go**:
+Parser tests run in the **dango** module (`github.com/marcuwynu23/dango`), checked out at [`../dan-go`](../dan-go) in this monorepo:
 
 ```bash
 go -C ../dan-go test ./...
@@ -137,7 +137,7 @@ go -C ../dan-go test ./... -bench=. -benchmem
 
 From this directory you can also use `make test`, `make test-verbose`, and `make bench`.
 
-Tests for the parser live in the [`dan-go`](../dan-go) module (`go -C ../dan-go test ./...` or `make test` from this repo).
+Use `go -C ../dan-go test ./...` or `make test` to exercise the library the CLI depends on (`github.com/marcuwynu23/dango/lib`).
 
 ## Project structure
 
@@ -145,7 +145,7 @@ Tests for the parser live in the [`dan-go`](../dan-go) module (`go -C ../dan-go 
 dan-cli/
 ├── cmd/dan/main.go   # CLI entrypoint
 ├── examples/         # Sample .dan files
-├── go.mod            # depends on github.com/marcuwynu23/dan/lib
+├── go.mod            # depends on github.com/marcuwynu23/dango/lib
 └── README.md
 ```
 

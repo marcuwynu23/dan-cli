@@ -37,10 +37,10 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
-      - name: Run tests
+      - name: Run dango (../dan-go) library tests
         run: go -C ../dan-go test ./... -v
 
-      - name: Run tests with coverage
+      - name: Run dango library tests with coverage
         if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.23'
         run: go -C ../dan-go test ./... -coverprofile=coverage.out
 
