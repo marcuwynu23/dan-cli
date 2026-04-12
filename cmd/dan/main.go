@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"dan-cli/dan"
+	"github.com/marcuwynu23/dan/lib"
 )
 
 func main() {
@@ -93,7 +93,7 @@ func runDecode(outputJSON bool, filePath string) error {
 		return err
 	}
 	
-	result, err := dan.Decode(input)
+	result, err := lib.Decode(input)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func runDecode(outputJSON bool, filePath string) error {
 	}
 	
 	// Output as DAN (pretty-printed)
-	output := dan.Encode(result)
+	output := lib.Encode(result)
 	fmt.Println(output)
 	return nil
 }
@@ -125,13 +125,13 @@ func runEncode(inputJSON bool, filePath string) error {
 	} else {
 		// Assume input is DAN
 		var err error
-		obj, err = dan.Decode(input)
+		obj, err = lib.Decode(input)
 		if err != nil {
 			return err
 		}
 	}
 	
-	output := dan.Encode(obj)
+	output := lib.Encode(obj)
 	fmt.Println(output)
 	return nil
 }
@@ -142,7 +142,7 @@ func runPretty(outputJSON bool, filePath string) error {
 		return err
 	}
 	
-	result, err := dan.Decode(input)
+	result, err := lib.Decode(input)
 	if err != nil {
 		return err
 	}
@@ -154,7 +154,7 @@ func runPretty(outputJSON bool, filePath string) error {
 	}
 	
 	// Pretty-print as DAN
-	output := dan.Encode(result)
+	output := lib.Encode(result)
 	fmt.Println(output)
 	return nil
 }

@@ -6,21 +6,21 @@ build:
 	mkdir -p bin
 	go build -o bin/dan cmd/dan/main.go
 
-# Run tests
+# Run tests (library lives in ../dan-go)
 test:
-	go test ./tests
+	go -C ../dan-go test ./...
 
 # Run tests with verbose output
 test-verbose:
-	go test ./tests -v
+	go -C ../dan-go test ./... -v
 
 # Run tests with coverage
 test-coverage:
-	go test ./tests -cover
+	go -C ../dan-go test ./... -cover
 
 # Run benchmarks
 bench:
-	go test ./tests -bench=. -benchmem
+	go -C ../dan-go test ./... -bench=. -benchmem
 
 # Install the CLI
 install:
