@@ -9,10 +9,12 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build for ${{ matrix.os }}/${{ matrix.arch }}
+  release:
+    name: Build and Release (${{ matrix.os }}/${{ matrix.arch }})
     runs-on: ubuntu-latest
+
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: linux
@@ -44,23 +46,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.5"
 
-      - name: Get version from tag
-        id: tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Get version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Download dependencies
         run: go mod download
 
-      - name: Generate go.sum
+      - name: Tidy modules
         run: go mod tidy
-
-      - name: Create bin directory
-        run: mkdir -p bin
 
       - name: Build binary
         env:
@@ -68,70 +67,32 @@ jobs:
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
         run: |
-          go build -ldflags="-s -w -X main.version=${{ steps.tag.outputs.VERSION }}" -o bin/dan${{ matrix.ext }} cmd/dan/main.go
+          mkdir -p dist
 
-      - name: Create archive (Linux/macOS)
-        if: matrix.os == 'linux' || matrix.os == 'darwin'
+          BIN_NAME="dan-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.ext }}"
+
+          go build -ldflags "-s -w -X main.version=${VERSION}" \
+            -o "dist/${BIN_NAME}" ./cmd/dan/main.go
+
+      - name: Package release
         shell: bash
         run: |
-          cd bin
-          tar -czf ../dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz dan
-          cd ..
-          echo "Created dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz"
+          cd dist
 
-      - name: Create archive (Windows)
-        if: matrix.os == 'windows'
-        shell: bash
-        run: |
-          cd bin
-          zip -r ../dan-${{ matrix.os }}-${{ matrix.arch }}.zip dan.exe
-          cd ..
-          echo "Created dan-${{ matrix.os }}-${{ matrix.arch }}.zip"
+          if [[ "${{ matrix.os }}" == "windows" ]]; then
+            zip "${BIN_NAME}.zip" "${BIN_NAME}"
+            echo "dist/${BIN_NAME}.zip" >> ../files.txt
+          else
+            tar -czf "${BIN_NAME}.tar.gz" "${BIN_NAME}"
+            echo "dist/${BIN_NAME}.tar.gz" >> ../files.txt
+          fi
 
-      - name: Upload artifact (Linux/macOS)
-        if: matrix.os == 'linux' || matrix.os == 'darwin'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dan-${{ matrix.os }}-${{ matrix.arch }}
-          path: dan-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
-
-      - name: Upload artifact (Windows)
-        if: matrix.os == 'windows'
-        uses: actions/upload-artifact@v4
-        with:
-          name: dan-${{ matrix.os }}-${{ matrix.arch }}
-          path: dan-${{ matrix.os }}-${{ matrix.arch }}.zip
-
-  release:
-    name: Create Release
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Get version from tag
-        id: tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Prepare release files
-        run: |
-          mkdir -p release
-          find artifacts -type f \( -name "*.tar.gz" -o -name "*.zip" \) -exec cp {} release/ \;
-          echo "Release files prepared:"
-          ls -lh release/
-
-      - name: Create Release
+      - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.VERSION }}
-          name: Release ${{ steps.tag.outputs.VERSION }}
-          files: release/*
+          files: |
+            dist/*.zip
+            dist/*.tar.gz
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
